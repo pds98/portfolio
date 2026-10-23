@@ -4,6 +4,7 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { publicApi } from "../api";
 import { ApiError } from "../api/client";
+import { IntroBoundary } from "../components/IntroBoundary";
 import { TopBar } from "../components/TopBar";
 import { AboutSection } from "../components/portfolio/AboutSection";
 import { CertificationsSection } from "../components/portfolio/CertificationsSection";
@@ -18,13 +19,15 @@ import { LinkButton } from "../components/LinkButton";
 // Animation 3D (Three.js) chargée à la demande : le reste de la page n'attend pas ce code lourd
 const IntroAnimation = lazy(() => import("@intro"));
 
-/** L'intro ne se joue qu'une fois par session, et jamais si l'utilisateur réduit les animations. */
+/**
+ * L'intro ne se joue qu'une fois par session, et jamais si l'utilisateur réduit les animations.
+ * Fonction PURE (lecture seule) : React peut l'appeler deux fois en mode strict ;
+ * le marqueur « déjà vue » est écrit dans un useEffect, voir plus bas.
+ */
 function shouldPlayIntro(slug: string): boolean {
   try {
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return false;
-    if (sessionStorage.getItem(`intro:${slug}`)) return false;
-    sessionStorage.setItem(`intro:${slug}`, "1");
-    return true;
+    return !sessionStorage.getItem(`intro:${slug}`);
   } catch {
     return false;
   }
@@ -41,6 +44,15 @@ export default function PublicPortfolioPage() {
   const [error, setError] = useState<string | null>(null);
   const [intro, setIntro] = useState(() => shouldPlayIntro(slug));
   const [cvError, setCvError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!intro) return;
+    try {
+      sessionStorage.setItem(`intro:${slug}`, "1");
+    } catch {
+      /* navigation privée : l'intro se rejouera, sans gravité */
+    }
+  }, [intro, slug]);
 
   useEffect(() => {
     setData(null);
@@ -104,16 +116,27 @@ export default function PublicPortfolioPage() {
   return (
     <>
       {intro && (
-        <Suspense fallback={null}>
-          <IntroAnimation onComplete={() => setIntro(false)} />
+        <IntroBoundary onError={() => setIntro(false)}>
+          <Suspense fallback={null}>
+            <IntroAnimation onComplete={() => setIntro(false)} />
+          </Suspense>
+          {/* Hors du Suspense : le bouton est visible pendant le chargement de Three.js */}
           <Button
             onClick={() => setIntro(false)}
             variant="outlined"
-            sx={{ position: "fixed", bottom: 24, right: 24, zIndex: 2000, color: "#0f0", borderColor: "#0f0" }}
+            sx={{
+              position: "fixed",
+              bottom: 24,
+              right: 24,
+              zIndex: 10000,
+              color: "#0f0",
+              borderColor: "#0f0",
+              bgcolor: "rgba(0,0,0,.6)",
+            }}
           >
             Passer l'intro
           </Button>
-        </Suspense>
+        </IntroBoundary>
       )}
       <TopBar title={data.profile.fullName} actions={actions} />
       <main>

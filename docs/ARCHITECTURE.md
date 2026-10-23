@@ -224,7 +224,7 @@ Les 5 ressources (expériences, formations, compétences, projets, certification
 
 - **Réutilisation de mon portfolio existant** (`github.com/pds98/portfolio`, déjà en React/Vite/TS/MUI). Le design et les sections sont conservés, mais tout le contenu codé en dur est remplacé par les données de l'API. Les compteurs inventés sont remplacés par des valeurs calculées.
 - **MUI** pour l'accessibilité intégrée (rôles ARIA, focus, navigation au clavier) et le thème clair/sombre.
-- **Animation d'intro (Three.js)** chargée à la demande (`React.lazy`), jouée une fois par session, désactivée si l'utilisateur préfère réduire les animations, et avec un bouton « Passer ».
+- **Animation d'intro (Three.js)** chargée à la demande (`React.lazy`), jouée une fois par session, désactivée si l'utilisateur préfère réduire les animations, et avec un bouton « Passer ». Elle est protégée par une barrière d'erreur (`IntroBoundary`) : sans WebGL, la page s'affiche quand même. L'éclairage `<Environment preset="night">` de l'original a été retiré, parce qu'il téléchargeait une image depuis un CDN externe et faisait planter la page hors ligne.
 - **Projet TypeScript séparé pour l'intro** (`tsconfig.intro.json` + module virtuel `@intro`) : les types de `@react-three/fiber` ajoutent des milliers d'éléments JSX globaux, ce qui fait échouer le typage des composants MUI (TS2590).
 
 ### 5.7 Sécurité (récapitulatif)

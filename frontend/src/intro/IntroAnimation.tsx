@@ -2,7 +2,7 @@
 // (seules les variables inutilisées ont été retirées pour passer le mode strict).
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Environment, Stars } from "@react-three/drei";
+import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
 import { motion } from "framer-motion";
@@ -432,7 +432,8 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }: IntroAnim
         <pointLight position={[10, 10, 10]} intensity={1} />
         <spotLight position={[0, 5, 0]} angle={0.3} penumbra={1} intensity={1.5} castShadow color="#00ff88" />
         <Particles count={1000} />
-        <Environment preset="night" />
+        {/* <Environment preset="night" /> retiré : il téléchargeait une image HDR depuis un CDN
+            externe ; hors ligne, l'erreur faisait planter toute la page. Les lumières suffisent. */}
         <Finger />
         <Scanner />
         <OrbitControls enabled={false} />
