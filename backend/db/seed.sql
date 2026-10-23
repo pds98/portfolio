@@ -17,7 +17,7 @@ ON CONFLICT (email) DO NOTHING;
 
 -- Chaque INSERT retrouve l'id du compte démo par son slug. Les gardes
 -- NOT EXISTS / ON CONFLICT rendent le script ré-exécutable sans doublons.
-INSERT INTO profiles (user_id, full_name, headline, bio, email, city, linkedin_url, github_url)
+INSERT INTO profiles (user_id, full_name, headline, bio, email, city, linkedin_url, github_url, photo_url)
 SELECT id,
        'Demba Sow',
        'Programmeur-analyste · Analyste de données',
@@ -25,7 +25,8 @@ SELECT id,
        'demba.sow@example.com',
        'Montréal, QC',
        'https://www.linkedin.com/in/pape-demba-sow-8a5b3b1b2/',
-       'https://github.com/pds98'
+       'https://github.com/pds98',
+       '/images/me.PNG'
 FROM users WHERE slug = 'demba-sow'
 ON CONFLICT (user_id) DO NOTHING;
 
@@ -106,7 +107,7 @@ CROSS JOIN (VALUES
   ('Portfolio professionnel + générateur de CV',
    'Application full-stack : portfolio public, tableau de bord privé et génération de CV PDF avec cache Redis.',
    ARRAY['React', 'TypeScript', 'Express', 'PostgreSQL', 'Redis', 'Docker'],
-   'https://github.com/pds98/portfolio', NULL, '/images/projects/portfolio.jpg', 0),
+   'https://github.com/pds98/portfolio', NULL, NULL, 0),
   ('GestPriere',
    'Application de gestion et de réservation de salles de prière, réalisée en équipe.',
    ARRAY['Spring Boot', 'React Native', 'Java'],

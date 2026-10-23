@@ -1,12 +1,25 @@
+import "@fontsource/poppins/400.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { AuthProvider } from "./context/AuthContext";
+import { ThemeModeProvider } from "./context/ThemeModeContext";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("Élément #root introuvable");
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <ThemeModeProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeModeProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

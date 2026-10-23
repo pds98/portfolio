@@ -1,44 +1,76 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { Suspense, lazy, type ReactNode } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import HomePage from "./pages/HomePage";
+import { LoginPage, RegisterPage } from "./pages/AuthPages";
+import { LinkButton } from "./components/LinkButton";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+// Découpage du code : le tableau de bord et le portfolio public sont chargés à la demande
+const PublicPortfolioPage = lazy(() => import("./pages/PublicPortfolioPage"));
+const DashboardLayout = lazy(() => import("./pages/dashboard/DashboardLayout"));
+const OverviewPanel = lazy(() => import("./pages/dashboard/OverviewPanel"));
+const ProfilePanel = lazy(() => import("./pages/dashboard/ProfilePanel"));
+const CvPanel = lazy(() => import("./pages/dashboard/CvPanel"));
+const AccountPanel = lazy(() => import("./pages/dashboard/AccountPanel"));
+const ContentPanels = lazy(() => import("./pages/dashboard/ContentPanels"));
 
-type Health = { status: string; postgres?: string; redis?: string };
+const Loader = () => (
+  <Box sx={{ minHeight: "60vh", display: "grid", placeItems: "center" }}>
+    <CircularProgress aria-label="Chargement" />
+  </Box>
+);
 
-function Home() {
-  const [health, setHealth] = useState<Health | null>(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/api/health`)
-      .then((r) => r.json())
-      .then(setHealth)
-      .catch(() => setHealth({ status: "error" }));
-  }, []);
-
-  return (
-    <main style={{ fontFamily: "sans-serif", maxWidth: 720, margin: "2rem auto" }}>
-      <h1>Portfolio professionnel</h1>
-      <p>Socle de départ : React + Vite + Express + PostgreSQL + Redis.</p>
-      <h2>État des services</h2>
-      <pre>{JSON.stringify(health, null, 2)}</pre>
-      <p>
-        <Link to="/p/demo-etudiant">Voir le portfolio de démonstration</Link>
-      </p>
-    </main>
-  );
+/** Garde de route : l'espace privé exige une session, sinon redirection vers /login. */
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  if (loading) return <Loader />;
+  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  return <>{children}</>;
 }
 
-function PublicPortfolio() {
-  // TODO (étudiants) : récupérer /api/public/:slug et afficher toutes les sections
-  return <main style={{ fontFamily: "sans-serif", margin: "2rem" }}>Portfolio public à implémenter</main>;
+function NotFound() {
+  return (
+    <Container sx={{ py: 12, textAlign: "center" }}>
+      <Typography variant="h3" component="h1" gutterBottom>
+        Page introuvable
+      </Typography>
+      <LinkButton to="/" variant="contained">
+        Retour à l'accueil
+      </LinkButton>
+    </Container>
+  );
 }
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/p/:slug" element={<PublicPortfolio />} />
-      {/* TODO : /login, /register, /dashboard */}
-    </Routes>
+    <Suspense fallback={<Loader />}>
+      <Routes>
+        {/* ---------- espace public ---------- */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/p/:slug" element={<PublicPortfolioPage />} />
+
+        {/* ---------- espace privé (authentification requise) ---------- */}
+        <Route
+          path="/dashboard"
+          element={
+            <RequireAuth>
+              <DashboardLayout />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<OverviewPanel />} />
+          <Route path="profile" element={<ProfilePanel />} />
+          <Route path=":resource" element={<ContentPanels />} />
+          <Route path="cv" element={<CvPanel />} />
+          <Route path="account" element={<AccountPanel />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 }
