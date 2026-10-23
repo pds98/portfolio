@@ -14,8 +14,18 @@ import { HttpError, asyncHandler } from "../utils/http.js";
 
 export const authRouter = Router();
 
-/** 10 tentatives par IP et par tranche de 15 min sur les routes sensibles. */
-const authLimiter = rateLimit({ prefix: "auth", max: 10, windowSeconds: 15 * 60 });
+/**
+ * Anti force brute : 10 ÉCHECS par IP et par tranche de 15 min (connexion,
+ * changement de mot de passe). Les connexions réussies ne sont pas comptées.
+ */
+const authLimiter = rateLimit({
+  prefix: "auth",
+  max: config.authRateLimitMax,
+  windowSeconds: 15 * 60,
+  failuresOnly: true,
+});
+/** Anti création de comptes en masse : 20 inscriptions par IP et par heure. */
+const registerLimiter = rateLimit({ prefix: "register", max: config.authRateLimitMax * 2, windowSeconds: 60 * 60 });
 
 async function loadCurrentUser(userId: number): Promise<CurrentUser | null> {
   const { rows } = await pool.query<CurrentUser>(
@@ -35,7 +45,7 @@ async function openSession(res: import("express").Response, userId: number): Pro
 // ------------------------------------------------------------------ RF-01
 authRouter.post(
   "/register",
-  authLimiter,
+  registerLimiter,
   asyncHandler(async (req, res) => {
     const input = registerSchema.parse(req.body);
 

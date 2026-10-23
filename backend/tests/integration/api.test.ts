@@ -23,6 +23,10 @@ describe.skipIf(!enabled)("API (intégration PostgreSQL + Redis)", () => {
 
   beforeAll(async () => {
     await connectRedis();
+    // Repart d'un quota vierge (les tests créent plusieurs comptes depuis la même IP)
+    const keys: string[] = [];
+    for await (const k of redis.scanIterator({ MATCH: "ratelimit:*" })) keys.push(k);
+    if (keys.length) await redis.del(keys);
   });
 
   afterAll(async () => {
@@ -50,6 +54,15 @@ describe.skipIf(!enabled)("API (intégration PostgreSQL + Redis)", () => {
 
   it("refuse un second compte avec le même courriel (409)", async () => {
     await request(app).post("/api/auth/register").send({ email, password, fullName: "Doublon" }).expect(409);
+  });
+
+  it("ne compte que les échecs dans la limite anti force brute", async () => {
+    const ok = await request(app).post("/api/auth/login").send({ email, password }).expect(200);
+    const remainingAfterSuccess = Number(ok.headers["x-ratelimit-remaining"]);
+    await request(app).post("/api/auth/login").send({ email, password }).expect(200);
+    const fail = await request(app).post("/api/auth/login").send({ email, password: "Mauvais123" }).expect(401);
+    // la 2e connexion réussie n'a rien consommé ; l'échec, si
+    expect(Number(fail.headers["x-ratelimit-remaining"])).toBe(remainingAfterSuccess);
   });
 
   it("refuse un mauvais mot de passe sans révéler si le compte existe", async () => {

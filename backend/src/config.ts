@@ -24,6 +24,9 @@ export const config = {
   /** Chemin de Chromium utilisé par Puppeteer (installé dans l'image Docker). */
   chromiumPath: env.PUPPETEER_EXECUTABLE_PATH ?? "/usr/bin/chromium-browser",
 
+  /** Nombre d'échecs de connexion tolérés par IP / 15 min. */
+  authRateLimitMax: Number(env.AUTH_RATE_LIMIT_MAX ?? 10),
+
   /** Coût bcrypt : 12 ≈ 250 ms par hachage, bon compromis sécurité / latence. */
   bcryptRounds: Number(env.BCRYPT_ROUNDS ?? 12),
 } as const;
