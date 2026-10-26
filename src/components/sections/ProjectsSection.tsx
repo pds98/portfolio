@@ -14,12 +14,20 @@ import {
 import { motion } from 'framer-motion';
 import type { IProject } from '../../core/interfaces/IProject';
 
+/** Initiales des deux premiers mots significatifs du titre (ex. « Smart Tax Collect » → « ST »). */
+const getInitials = (title: string): string =>
+    title
+        .split(/[\s–-]+/)
+        .filter((word) => /^[A-Za-zÀ-ÿ]/.test(word) && word.length > 2)
+        .slice(0, 2)
+        .map((word) => word[0].toUpperCase())
+        .join('');
+
 interface ProjectsSectionProps {
     projects: IProject[];
 }
 
 export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
-    console.log('Projects:', projects);
     const [selectedTech, setSelectedTech] = useState('all');
 
     const allTechnologies = Array.from(new Set(projects.flatMap(p => p.technologies)));
@@ -81,12 +89,33 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                             {filteredProjects.map((project) => (
                                 <Box key={project.id} sx={{ width: { xs: '100%', sm: '50%', md: '33.33%' }, p: 1.5 }}>
                                     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                        <CardMedia
-                                            component="img"
-                                            height="200"
-                                            image={project.image}
-                                            alt={project.title}
-                                        />
+                                        {project.image ? (
+                                            <CardMedia
+                                                component="img"
+                                                height="200"
+                                                image={project.image}
+                                                alt={`Aperçu du projet ${project.title}`}
+                                                sx={{ objectFit: 'cover' }}
+                                            />
+                                        ) : (
+                                            // Pas de capture : en-tête dégradé avec les initiales du projet
+                                            <Box
+                                                aria-hidden
+                                                sx={{
+                                                    height: 200,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    background: 'linear-gradient(135deg, #1a365d 0%, #3182ce 100%)',
+                                                    color: '#fff',
+                                                    fontSize: '3rem',
+                                                    fontWeight: 700,
+                                                    letterSpacing: 2
+                                                }}
+                                            >
+                                                {getInitials(project.title)}
+                                            </Box>
+                                        )}
                                         <CardContent sx={{ flexGrow: 1 }}>
                                             <Typography gutterBottom variant="h5" component="h2">
                                                 {project.title}

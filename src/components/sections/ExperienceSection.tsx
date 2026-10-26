@@ -16,6 +16,20 @@ interface Experience {
 
 const experiences: Experience[] = [
     {
+        company: 'Revenu Québec',
+        role: 'Technicien informatique',
+        period: 'Mai 2026 – Aujourd\'hui',
+        tasks: [
+            "Préparation, configuration et déploiement des postes de travail",
+            "Accueil technique des nouveaux employés et des retours de congé",
+            "Soutien technique et assistance aux utilisateurs",
+            "Automatisation du suivi des livraisons d'équipement (Python)"
+        ],
+        technologies: ['Windows', 'Microsoft 365', 'Outlook', 'Python', 'Soutien TI'],
+        companyUrl: 'https://www.revenuquebec.ca',
+        color: '#1565c0'
+    },
+    {
         company: 'RISC Group',
         role: "Analyste et Technicien",
         period: "Déc. 2024 – Jan. 2025",
@@ -48,7 +62,7 @@ const experiences: Experience[] = [
     {
         company: "Digital Ubuntu",
         role: "Technicien Informatique",
-        period: "Janv. 2018 – Nov. 2024",
+        period: "Janv. 2021 – Nov. 2022",
         tasks: [
             "Support informatique (logiciel et matériel)",
             "Développement et débogage d'outils internes",
@@ -63,7 +77,7 @@ const experiences: Experience[] = [
     {
         company: "Bank Cofina",
         role: "Développeur Web",
-        period: "Janv. 2021 – Nov. 2023",
+        period: "Janv. 2021 – Nov. 2022",
         tasks: [
             "Création de prototypes UI/UX",
             "Développement web & IA",
