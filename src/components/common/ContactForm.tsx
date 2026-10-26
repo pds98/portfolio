@@ -13,7 +13,6 @@ import {
     Alert
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -50,7 +49,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
     const [errors, setErrors] = React.useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [submitStatus, setSubmitStatus] = React.useState<'success' | 'error' | null>(null);
-    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const validateField = (name: keyof FormData, value: string): string => {
         switch (name) {
@@ -78,21 +76,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
             ...prev,
             [name]: error
         }));
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                setErrors(prev => ({
-                    ...prev,
-                    attachment: 'Le fichier ne doit pas dépasser 5MB'
-                }));
-                return;
-            }
-            setFormData(prev => ({ ...prev, attachment: file }));
-            setErrors(prev => ({ ...prev, attachment: undefined }));
-        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -231,35 +214,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
                                 }}
                             />
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    style={{ display: 'none' }}
-                                    onChange={handleFileChange}
-                                    accept=".pdf,.doc,.docx,.txt"
-                                />
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<AttachFileIcon />}
-                                    onClick={() => fileInputRef.current?.click()}
-                                    sx={{ borderRadius: 2 }}
-                                >
-                                    {formData.attachment ? 'Fichier sélectionné' : 'Joindre un fichier'}
-                                </Button>
-                                {formData.attachment && (
-                                    <Typography variant="body2" color="textSecondary">
-                                        {formData.attachment.name}
-                                    </Typography>
-                                )}
-                            </Box>
-
-                            {errors.attachment && (
-                                <Typography color="error" variant="caption">
-                                    {errors.attachment}
-                                </Typography>
-                            )}
-
                             <AnimatePresence>
                                 {submitStatus && (
                                     <motion.div
@@ -273,7 +227,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
                                             icon={submitStatus === 'success' ? <CheckCircleIcon /> : <ErrorIcon />}
                                         >
                                             {submitStatus === 'success' 
-                                                ? 'Message envoyé avec succès !'
+                                                ? 'Votre messagerie s\'ouvre avec le message prêt à envoyer.'
                                                 : 'Erreur lors de l\'envoi du message. Veuillez réessayer.'}
                                         </Alert>
                                     </motion.div>

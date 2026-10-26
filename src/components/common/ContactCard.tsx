@@ -24,14 +24,14 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 interface ContactInfo {
     email: string;
-    phone: string;
+    phone?: string;
     location: string;
     timezone: string;
     availability: "Disponible" | "Occupé" | "En réunion";
     social: {
         linkedin: string;
         github: string;
-        twitter: string;
+        twitter?: string;
     };
 }
 
@@ -144,20 +144,22 @@ export const ContactCard: React.FC<ContactCardProps> = ({ info, onShowQRCode }) 
                                 </Tooltip>
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <PhoneIcon color="primary" />
-                                <Typography variant="body1" sx={{ flex: 1 }}>
-                                    {info.phone}
-                                </Typography>
-                                <Tooltip title="Copier le numéro">
-                                    <IconButton 
-                                        size="small"
-                                        onClick={() => handleCopy(info.phone, 'Numéro')}
-                                    >
-                                        <ContentCopyIcon fontSize="small" />
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
+                            {info.phone && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <PhoneIcon color="primary" />
+                                    <Typography variant="body1" sx={{ flex: 1 }}>
+                                        {info.phone}
+                                    </Typography>
+                                    <Tooltip title="Copier le numéro">
+                                        <IconButton 
+                                            size="small"
+                                            onClick={() => handleCopy(info.phone!, 'Numéro')}
+                                        >
+                                            <ContentCopyIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            )}
 
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <LocationOnIcon color="primary" />
@@ -199,16 +201,18 @@ export const ContactCard: React.FC<ContactCardProps> = ({ info, onShowQRCode }) 
                                         <GitHubIcon />
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title="Twitter">
-                                    <IconButton 
-                                        component="a" 
-                                        href={info.social.twitter}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <TwitterIcon />
-                                    </IconButton>
-                                </Tooltip>
+                                {info.social.twitter && (
+                                    <Tooltip title="Twitter">
+                                        <IconButton 
+                                            component="a" 
+                                            href={info.social.twitter}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <TwitterIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
                             </Box>
                         </Box>
                     </CardContent>

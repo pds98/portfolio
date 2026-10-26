@@ -51,7 +51,7 @@ export const projects: Project[] = [
         - Déploiement Docker multi-étapes avec healthchecks et intégration continue.`,
         technologies: ["React", "TypeScript", "Express", "PostgreSQL", "Redis", "Docker"],
         githubUrl: "https://github.com/pds98/portfolio/tree/portfolio-cv",
-        demoUrl: "",
+        demoUrl: "https://portfolio-demba-sow.vercel.app/p/demba-sow",
         image: "/images/projects/portfolio.jpg"
     }),
     new Project({
@@ -64,8 +64,8 @@ export const projects: Project[] = [
         - Affichage des prédictions et de leurs résultats ;
         - Mise en évidence des facteurs dont dépend la prédiction, pour rendre l'IA compréhensible par tous.`,
         technologies: ["React", "Machine learning", "Visualisation de données"],
-        githubUrl: "",
-        demoUrl: "",
+        githubUrl: "https://github.com/pds98/prediction",
+        demoUrl: "https://prediction-client-five.vercel.app",
         image: ""
     }),
     new Project({

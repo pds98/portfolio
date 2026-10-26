@@ -63,7 +63,7 @@ export class HeroSection extends React.Component {
                                     variant="outlined"
                                     color="inherit"
                                     startIcon={<EmailIcon />}
-                                    href="mailto:papedembasow@gmail.com"
+                                    href="mailto:papedemba2k23@outlook.fr"
                                 >
                                     Contact
                                 </Button>

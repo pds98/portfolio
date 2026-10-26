@@ -13,22 +13,21 @@ import { ContactForm } from '../common/ContactForm';
 import { QRCodeDialog } from '../common/QRCodeDialog';
 
 // Données de contact
+// phone / twitter facultatifs : la ligne ou l'icône n'apparaît que s'ils sont renseignés.
 const contactInfo: IContactInfo = {
-    email: 'votre.email@example.com',
-    phone: '+33 6 12 34 56 78',
-    location: 'Paris, France',
-    timezone: 'Europe/Paris (UTC+1)',
+    email: 'papedemba2k23@outlook.fr',
+    location: 'Montréal, QC, Canada',
+    timezone: 'Heure de l\'Est (UTC−5)',
     availability: 'Disponible' as const,
     social: {
-        linkedin: 'https://linkedin.com/in/votre-profil',
-        github: 'https://github.com/votre-username',
-        twitter: 'https://twitter.com/votre-username'
+        linkedin: 'https://www.linkedin.com/in/pape-demba-sow-8a5b3b1b2/',
+        github: 'https://github.com/pds98'
     }
 };
 
 // Données pour le QR Code
 const qrCodeInfo = {
-    name: 'Votre Nom',
+    name: 'Demba Sow',
     email: contactInfo.email,
     phone: contactInfo.phone,
     linkedin: contactInfo.social.linkedin
@@ -44,14 +43,14 @@ interface IContactFormData {
 
 interface IContactInfo {
     email: string;
-    phone: string;
+    phone?: string;
     location: string;
     timezone: string;
     availability: 'Disponible' | 'Occupé' | 'En réunion';
     social: {
         linkedin: string;
         github: string;
-        twitter: string;
+        twitter?: string;
     };
 }
 
@@ -60,12 +59,13 @@ export const ContactSection: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [qrDialogOpen, setQrDialogOpen] = React.useState(false);
 
+    // Site statique (sans serveur) : le formulaire ouvre la messagerie du visiteur
+    // avec le message prérempli, adressé à contactInfo.email.
     const handleSubmit = async (formData: IContactFormData) => {
-        // Simuler l'envoi du formulaire
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // En production, envoyez les données à votre backend
-        console.log('Form submitted:', formData);
+        const body = `${formData.message}\n\n— ${formData.name} (${formData.email})`;
+        window.location.href = `mailto:${contactInfo.email}`
+            + `?subject=${encodeURIComponent(formData.subject)}`
+            + `&body=${encodeURIComponent(body)}`;
     };
 
     return (

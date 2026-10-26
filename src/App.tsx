@@ -4,6 +4,7 @@ import { HeroSection } from './components/sections/HeroSection';
 import { AboutSection } from './components/sections/AboutSection';
 import { ExperienceSection } from './components/sections/ExperienceSection';
 import { ProjectsSection } from './components/sections/ProjectsSection';
+import { CertificationsSection } from './components/sections/CertificationsSection';
 import { ContactSection } from './components/sections/ContactSection';
 import IntroAnimation from './components/IntroAnimation';
 // Source unique des projets : modifier src/data/projects.ts pour en ajouter.
@@ -29,6 +30,7 @@ function App() {
             <AboutSection />
             <ExperienceSection />
             <ProjectsSection projects={projects} />
+            <CertificationsSection />
             <ContactSection />
           </Box>
         </Container>

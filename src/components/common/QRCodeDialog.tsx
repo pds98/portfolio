@@ -16,7 +16,7 @@ interface QRCodeDialogProps {
     contactInfo: {
         name: string;
         email: string;
-        phone: string;
+        phone?: string;
         linkedin: string;
     };
 }
@@ -25,8 +25,7 @@ export const QRCodeDialog: React.FC<QRCodeDialogProps> = ({ open, onClose, conta
     // Créer une vCard
     const vCard = `BEGIN:VCARD
 VERSION:3.0
-FN:${contactInfo.name}
-TEL:${contactInfo.phone}
+FN:${contactInfo.name}${contactInfo.phone ? `\nTEL:${contactInfo.phone}` : ''}
 EMAIL:${contactInfo.email}
 URL:${contactInfo.linkedin}
 END:VCARD`;
