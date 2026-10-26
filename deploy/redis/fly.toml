@@ -1,0 +1,20 @@
+# Redis 7 privé (sessions, cache) – joignable seulement via le réseau interne Fly :
+#   redis://portfolio-demba-redis.internal:6379
+# Déploiement :  fly deploy -c deploy/redis/fly.toml
+app = "portfolio-demba-redis"
+primary_region = "yyz"
+
+[build]
+  image = "redis:7-alpine"
+
+[experimental]
+  # AOF : les sessions survivent au redémarrage ; écoute IPv6 pour le réseau privé Fly
+  cmd = ["redis-server", "--appendonly", "yes", "--dir", "/data", "--bind", "::", "--protected-mode", "no", "--maxmemory", "200mb", "--maxmemory-policy", "noeviction"]
+
+[[mounts]]
+  source = "redis_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
