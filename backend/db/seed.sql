@@ -22,7 +22,7 @@ SELECT id,
        'Demba Sow',
        'Programmeur-analyste · Analyste de données',
        'Programmeur-analyste en formation et analyste de données expérimenté, je me distingue par un profil polyvalent alliant compétences techniques, sens de l''analyse et créativité visuelle. Plusieurs années d''expérience en développement web, automatisation de données et support informatique m''ont donné une vision globale des systèmes numériques et des enjeux métiers.',
-       'demba.sow@example.com',
+       'papedemba2k23@outlook.fr',
        'Montréal, QC',
        'https://www.linkedin.com/in/pape-demba-sow-8a5b3b1b2/',
        'https://github.com/pds98',
@@ -119,7 +119,7 @@ CROSS JOIN (VALUES
   ('L''Atelier de la prédiction',
    'Démonstration interactive d''apprentissage automatique présentée aux portes ouvertes du Collège LaSalle (projet P6, 420-TT4) : des points verts et orange montrent comment le modèle apprend, puis comment il prédit et de quels facteurs dépend le résultat.',
    ARRAY['React', 'Machine learning', 'Visualisation de données'],
-   NULL, NULL, NULL, 3),
+   'https://github.com/pds98/prediction', 'https://prediction-client-five.vercel.app', NULL, 3),
   ('propersoIA – Assistant de productivité',
    'Surveille la concentration par webcam (cadre vert / orange / rouge), alerte en cas de distraction et enregistre un score et l''historique des sessions. Architecture MVC.',
    ARRAY['Python', 'OpenCV', 'NumPy'],
@@ -149,7 +149,10 @@ SELECT u.id, c.name, c.issuer, c.issue_date::date, c.sort_order
 FROM users u
 CROSS JOIN (VALUES
   ('Permis d''agent de sécurité (BSP)', 'Bureau de la sécurité privée', NULL, 0),
-  ('Secourisme / RCR', NULL, NULL, 1)
+  ('Secourisme / RCR', NULL, NULL, 1),
+  ('Certification Power BI', NULL, NULL, 2),
+  ('Certification en intelligence artificielle', NULL, NULL, 3),
+  ('Certification en relation clientèle', NULL, NULL, 4)
 ) AS c(name, issuer, issue_date, sort_order)
 WHERE u.slug = 'demba-sow'
   AND NOT EXISTS (SELECT 1 FROM certifications x WHERE x.user_id = u.id);
